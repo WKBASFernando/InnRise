@@ -23,16 +23,24 @@ public class EmailService {
 
     public boolean sendContactNotification(ContactMessage contactMessage) {
         try {
+            String emailBody = buildContactEmailBody(contactMessage);
+            
+            // Send actual email
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(adminEmail);
             message.setSubject("New Contact Message from InnRise Website - " + contactMessage.getSubject());
-            
-            String emailBody = buildContactEmailBody(contactMessage);
             message.setText(emailBody);
             
             mailSender.send(message);
             log.info("Contact notification email sent successfully to {}", adminEmail);
+            
+            // Also log for debugging
+            log.info("=== EMAIL NOTIFICATION SENT ===");
+            log.info("Subject: New Contact Message from InnRise Website - {}", contactMessage.getSubject());
+            log.info("Body:\n{}", emailBody);
+            log.info("=== END EMAIL NOTIFICATION ===");
+            
             return true;
             
         } catch (Exception e) {
@@ -43,16 +51,24 @@ public class EmailService {
 
     public boolean sendAutoReply(ContactMessage contactMessage) {
         try {
+            String autoReplyBody = buildAutoReplyBody(contactMessage);
+            
+            // Send actual auto-reply email
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(contactMessage.getEmail());
             message.setSubject("Thank you for contacting InnRise - We'll get back to you soon!");
-            
-            String autoReplyBody = buildAutoReplyBody(contactMessage);
             message.setText(autoReplyBody);
             
             mailSender.send(message);
             log.info("Auto-reply email sent successfully to {}", contactMessage.getEmail());
+            
+            // Also log for debugging
+            log.info("=== AUTO-REPLY EMAIL SENT ===");
+            log.info("Subject: Thank you for contacting InnRise - We'll get back to you soon!");
+            log.info("Body:\n{}", autoReplyBody);
+            log.info("=== END AUTO-REPLY EMAIL ===");
+            
             return true;
             
         } catch (Exception e) {
