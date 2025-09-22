@@ -11,9 +11,9 @@ $(document).ready(function() {
 
 function initializeHotelAdminDashboard() {
     // Check if user is logged in and has hotel admin role
-    const token = localStorage.getItem('bearerToken');
+    const token = localStorage.getItem('token');
     if (!token) {
-        window.location.href = '../index.html';
+        window.location.href = 'signin.html';
         return;
     }
     
@@ -24,8 +24,16 @@ function initializeHotelAdminDashboard() {
         
         // Check if user has hotel admin role
         if (payload.role !== 'HOTEL_ADMIN') {
-            alert('Access denied. Hotel admin privileges required.');
-            window.location.href = '../index.html';
+            Swal.fire({
+                icon: 'error',
+                title: 'Access Denied',
+                text: 'Hotel admin privileges required to access this page.',
+                confirmButtonText: 'Go to Login',
+                confirmButtonColor: '#f97316',
+                allowOutsideClick: false
+            }).then(() => {
+                window.location.href = 'signin.html';
+            });
             return;
         }
         
@@ -37,8 +45,8 @@ function initializeHotelAdminDashboard() {
         
     } catch (error) {
         console.error('Error decoding token:', error);
-        localStorage.removeItem('bearerToken');
-        window.location.href = '../index.html';
+        localStorage.removeItem('token');
+        window.location.href = 'signin.html';
     }
 }
 
@@ -415,7 +423,7 @@ function updateBookingStatus(bookingId, status) {
 
 // ==================== UTILITY FUNCTIONS ====================
 function getAuthHeaders() {
-    const token = localStorage.getItem('bearerToken');
+    const token = localStorage.getItem('token');
     return {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -450,7 +458,7 @@ function showAlert(message, type) {
 }
 
 function logout() {
-    localStorage.removeItem('bearerToken');
-    localStorage.removeItem('refreshToken');
-    window.location.href = '../index.html';
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'signin.html';
 }

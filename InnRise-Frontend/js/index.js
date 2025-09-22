@@ -1,8 +1,8 @@
-// Check if user is authenticated (optional for home page)
-// const token = localStorage.getItem('bearerToken');
-// if (!token) {
-//   window.location.href = './pages/signin.html'; // adjust path if needed
-// }
+// Check if user is authenticated
+const token = localStorage.getItem('token');
+if (!token) {
+  window.location.href = './pages/signin.html';
+}
 
 // Initialize home page functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -130,7 +130,13 @@ document.querySelector('.btn-search').addEventListener('click', function(e) {
     const checkOutDate = new Date(checkOut);
     
     if (checkOutDate <= checkInDate) {
-      alert('Check-out date must be after check-in date!');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Dates',
+        text: 'Check-out date must be after check-in date!',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       return;
     }
   }
@@ -156,12 +162,24 @@ document.querySelector('.newsletter-form').addEventListener('submit', function(e
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
   if (!email) {
-    alert('Please enter your email address.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Email Required',
+      text: 'Please enter your email address.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
     return;
   }
   
   if (!emailRegex.test(email)) {
-    alert('Please enter a valid email address.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Invalid Email',
+      text: 'Please enter a valid email address.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
     return;
   }
   
@@ -170,9 +188,21 @@ document.querySelector('.newsletter-form').addEventListener('submit', function(e
   if (!subscriptions.includes(email)) {
     subscriptions.push(email);
     localStorage.setItem('newsletterSubscriptions', JSON.stringify(subscriptions));
-    alert('Thank you for subscribing to our newsletter! You\'ll receive exclusive deals and travel inspiration.');
+    Swal.fire({
+      icon: 'success',
+      title: 'Subscribed!',
+      text: 'Thank you for subscribing to our newsletter! You\'ll receive exclusive deals and travel inspiration.',
+      confirmButtonText: 'Great!',
+      confirmButtonColor: '#f97316'
+    });
   } else {
-    alert('This email is already subscribed to our newsletter.');
+    Swal.fire({
+      icon: 'info',
+      title: 'Already Subscribed',
+      text: 'This email is already subscribed to our newsletter.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
   }
   
   this.reset();
@@ -227,37 +257,97 @@ function initializeFooterLinks() {
           document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
           break;
         case 'Special Offers':
-          alert('Special offers coming soon! Check back regularly for exclusive deals.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Special Offers',
+            text: 'Special offers coming soon! Check back regularly for exclusive deals.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Business Travel':
-          alert('Business travel services coming soon! Contact us for corporate bookings.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Business Travel',
+            text: 'Business travel services coming soon! Contact us for corporate bookings.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Gift Cards':
-          alert('Gift cards coming soon! Perfect for gifting amazing hotel experiences.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Gift Cards',
+            text: 'Gift cards coming soon! Perfect for gifting amazing hotel experiences.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Help Center':
-          alert('Help Center coming soon! For now, please contact us directly.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Help Center',
+            text: 'Help Center coming soon! For now, please contact us directly.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Contact Us':
           window.location.href = 'pages/contact.html';
           break;
         case 'Booking Support':
-          alert('Need booking support? Contact us at support@innrise.com or call +94 11 234 5678');
+          Swal.fire({
+            icon: 'info',
+            title: 'Booking Support',
+            text: 'Need booking support? Contact us at support@innrise.com or call +94 11 234 5678',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Privacy Policy':
-          alert('Privacy Policy: We respect your privacy and protect your personal information. Full policy coming soon.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Privacy Policy',
+            text: 'We respect your privacy and protect your personal information. Full policy coming soon.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Terms of Service':
-          alert('Terms of Service: By using InnRise, you agree to our terms. Full terms coming soon.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Terms of Service',
+            text: 'By using InnRise, you agree to our terms. Full terms coming soon.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Cookie Policy':
-          alert('Cookie Policy: We use cookies to enhance your experience. Full policy coming soon.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Cookie Policy',
+            text: 'We use cookies to enhance your experience. Full policy coming soon.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Accessibility':
-          alert('Accessibility: We are committed to making our website accessible to all users.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Accessibility',
+            text: 'We are committed to making our website accessible to all users.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         case 'Sitemap':
-          alert('Sitemap: Navigate easily through our website sections.');
+          Swal.fire({
+            icon: 'info',
+            title: 'Sitemap',
+            text: 'Navigate easily through our website sections.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#f97316'
+          });
           break;
         default:
           console.log('Link clicked:', linkText);
@@ -273,13 +363,37 @@ function initializeFooterLinks() {
       const platform = this.querySelector('i').className;
       
       if (platform.includes('facebook')) {
-        alert('Follow us on Facebook: @InnRiseOfficial');
+        Swal.fire({
+          icon: 'info',
+          title: 'Follow Us on Facebook',
+          text: '@InnRiseOfficial',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       } else if (platform.includes('twitter')) {
-        alert('Follow us on Twitter: @InnRiseOfficial');
+        Swal.fire({
+          icon: 'info',
+          title: 'Follow Us on Twitter',
+          text: '@InnRiseOfficial',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       } else if (platform.includes('instagram')) {
-        alert('Follow us on Instagram: @InnRiseOfficial');
+        Swal.fire({
+          icon: 'info',
+          title: 'Follow Us on Instagram',
+          text: '@InnRiseOfficial',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       } else if (platform.includes('linkedin')) {
-        alert('Connect with us on LinkedIn: InnRise');
+        Swal.fire({
+          icon: 'info',
+          title: 'Connect with Us on LinkedIn',
+          text: 'InnRise',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       }
     });
   });

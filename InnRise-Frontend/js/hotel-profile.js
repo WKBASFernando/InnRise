@@ -7,6 +7,13 @@ let selectedRoomId = null;
 
 // ==================== INITIALIZATION ====================
 $(document).ready(function() {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = 'signin.html';
+        return;
+    }
+    
     initializePage();
 });
 

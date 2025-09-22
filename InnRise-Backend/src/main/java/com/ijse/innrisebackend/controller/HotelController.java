@@ -161,6 +161,29 @@ public class HotelController {
         }
     }
 
+    @GetMapping("all")
+    public ResponseEntity<ApiResponse> getAllHotelsAlt() {
+        try {
+            List<HotelDTO> hotelDTOS = hotelService.getAllHotels();
+            return ResponseEntity.ok(
+                    new ApiResponse(
+                            200,
+                            "Hotels found",
+                            hotelDTOS
+                    )
+            );
+        } catch (Exception e) {
+            log.error("Error in getAllHotels: ", e);
+            return ResponseEntity.status(500).body(
+                    new ApiResponse(
+                            500,
+                            "Error fetching hotels",
+                            e.getMessage()
+                    )
+            );
+        }
+    }
+
     @GetMapping("getAllSimple")
     public ResponseEntity<ApiResponse> getAllHotelsSimple() {
         try {

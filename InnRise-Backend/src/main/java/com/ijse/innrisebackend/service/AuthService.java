@@ -63,18 +63,27 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        // Generate JWT access token using JwtUtil with role
-        String accessToken = jwtUtil.generateTokenWithRole(user.getEmail(), user.getRole().name());
+        try {
+            // Generate JWT access token using JwtUtil with role
+            String accessToken = jwtUtil.generateTokenWithRole(user.getEmail(), user.getRole().name());
+            System.out.println("JWT token generated successfully for user: " + user.getEmail() + " with role: " + user.getRole());
 
-        // Generate refresh token
-        var refreshToken = refreshTokenService.createRefreshToken(user);
+            // Generate refresh token
+            var refreshToken = refreshTokenService.createRefreshToken(user);
+            System.out.println("Refresh token created successfully for user: " + user.getEmail());
 
-        return AuthResponseDTO.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getToken())
-                .tokenType("Bearer")
-                .expiresIn(15 * 60L) // 15 minutes in seconds
-                .build();
+            return AuthResponseDTO.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken.getToken())
+                    .tokenType("Bearer")
+                    .expiresIn(15 * 60L) // 15 minutes in seconds
+                    .build();
+        } catch (Exception e) {
+            System.err.println("Error in authentication flow for user: " + user.getEmail());
+            System.err.println("Error details: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Authentication failed: " + e.getMessage(), e);
+        }
     }
 
     public AuthResponseDTO authenticateGoogle(String idTokenString) {

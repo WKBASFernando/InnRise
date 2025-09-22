@@ -1,153 +1,49 @@
--- InnRise Database Setup Script
--- Run this script to create the database and populate it with sample data
+-- InnRise Sample Data Script
+-- Run this script to populate the database with sample data
+-- Note: This script assumes tables already exist (created by Hibernate)
 
--- Create database
-CREATE DATABASE IF NOT EXISTS innRise;
 USE innRise;
 
--- Drop existing tables if they exist (in correct order due to foreign keys)
-DROP TABLE IF EXISTS feedback;
-DROP TABLE IF EXISTS payment;
-DROP TABLE IF EXISTS booking;
-DROP TABLE IF EXISTS room;
-DROP TABLE IF EXISTS hotel_photo;
-DROP TABLE IF EXISTS hotel_package;
-DROP TABLE IF EXISTS hotel;
-DROP TABLE IF EXISTS discount;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS refresh_token;
+-- Clear existing data (in correct order due to foreign keys)
+-- Using TRUNCATE for better performance and to avoid unsafe DELETE warnings
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE feedback;
+TRUNCATE TABLE payment;
+TRUNCATE TABLE booking;
+TRUNCATE TABLE room;
+TRUNCATE TABLE hotel_photo;
+TRUNCATE TABLE hotel_package;
+TRUNCATE TABLE hotel;
+TRUNCATE TABLE discount;
+TRUNCATE TABLE refresh_tokens;
+TRUNCATE TABLE user;
+SET FOREIGN_KEY_CHECKS = 1;
 
--- Create User table
-CREATE TABLE user (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) DEFAULT 'USER',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Create RefreshToken table
-CREATE TABLE refresh_token (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    token VARCHAR(255) UNIQUE NOT NULL,
-    user_id BIGINT NOT NULL,
-    expiry_date DATETIME NOT NULL,
-    revoked BOOLEAN DEFAULT FALSE,
-    created_at DATETIME NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
-);
-
--- Create Discount table
-CREATE TABLE discount (
-    discount_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    percentage DECIMAL(5,2) NOT NULL
-);
-
--- Create Hotel table
-CREATE TABLE hotel (
-    hotel_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    location VARCHAR(100) NOT NULL,
-    address VARCHAR(255) NOT NULL,
-    contact_number VARCHAR(20) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    description TEXT,
-    star_rating INT DEFAULT 0,
-    price DECIMAL(10,2) DEFAULT 0.00,
-    discount_id BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (discount_id) REFERENCES discount(discount_id) ON DELETE SET NULL
-);
-
--- Create HotelPhoto table
-CREATE TABLE hotel_photo (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    hotel_id BIGINT NOT NULL,
-    url VARCHAR(500) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (hotel_id) REFERENCES hotel(hotel_id) ON DELETE CASCADE
-);
-
--- Create Room table
-CREATE TABLE room (
-    room_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    hotel_id BIGINT NOT NULL,
-    type VARCHAR(50) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (hotel_id) REFERENCES hotel(hotel_id) ON DELETE CASCADE
-);
-
--- Create HotelPackage table
-CREATE TABLE hotel_package (
-    package_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    hotel_id BIGINT NOT NULL,
-    package_name VARCHAR(100) NOT NULL,
-    description TEXT,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (hotel_id) REFERENCES hotel(hotel_id) ON DELETE CASCADE
-);
-
--- Create Booking table
-CREATE TABLE booking (
-    booking_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT,
-    hotel_id BIGINT NOT NULL,
-    check_in_date DATE NOT NULL,
-    check_out_date DATE NOT NULL,
-    number_of_guests INT NOT NULL,
-    number_of_rooms INT NOT NULL,
-    special_requests TEXT,
-    total_amount DECIMAL(10,2) NOT NULL,
-    status VARCHAR(20) DEFAULT 'PENDING',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE SET NULL,
-    FOREIGN KEY (hotel_id) REFERENCES hotel(hotel_id) ON DELETE CASCADE
-);
-
--- Create Payment table
-CREATE TABLE payment (
-    payment_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    booking_id BIGINT NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    payment_method ENUM('CREDIT_CARD', 'DEBIT_CARD', 'PAYPAL', 'BANK_TRANSFER') NOT NULL,
-    payment_status VARCHAR(20) DEFAULT 'PENDING',
-    transaction_id VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE
-);
-
--- Create Feedback table
-CREATE TABLE feedback (
-    feedback_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    booking_id BIGINT NOT NULL,
-    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
-    comment TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES booking(booking_id) ON DELETE CASCADE
-);
+-- Reset auto-increment counters
+ALTER TABLE user AUTO_INCREMENT = 1;
+ALTER TABLE discount AUTO_INCREMENT = 1;
+ALTER TABLE hotel AUTO_INCREMENT = 1;
+ALTER TABLE room AUTO_INCREMENT = 1;
+ALTER TABLE hotel_package AUTO_INCREMENT = 1;
+ALTER TABLE booking AUTO_INCREMENT = 1;
+ALTER TABLE payment AUTO_INCREMENT = 1;
+ALTER TABLE feedback AUTO_INCREMENT = 1;
+ALTER TABLE refresh_tokens AUTO_INCREMENT = 1;
 
 -- Insert sample data
 
--- Insert Users
-INSERT INTO user (first_name, last_name, email, password, role) VALUES
-('John', 'Doe', 'john.doe@email.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER'),
-('Jane', 'Smith', 'jane.smith@email.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER'),
-('Admin', 'User', 'admin@innrise.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ADMIN');
+-- Insert Users (admin and regular users first, hotel admins will be added after hotels)
+INSERT INTO user (first_name, last_name, email, password, role, hotel_id) VALUES
+('Angelo', 'Fernando', 'angelofernando1609@gmail.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ADMIN', NULL),
+('John', 'Doe', 'john.doe@email.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', NULL),
+('Jane', 'Smith', 'jane.smith@email.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', NULL);
 
--- Insert Discounts
-INSERT INTO discount (code, percentage) VALUES
-('WELCOME10', 10.00),
-('SUMMER20', 20.00),
-('EARLYBIRD15', 15.00),
-('LOYALTY25', 25.00);
+-- Insert Discounts (updated structure with new fields)
+INSERT INTO discount (name, code, percentage, valid_from, valid_to, description) VALUES
+('Welcome Discount', 'WELCOME10', 10.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), 'Welcome discount for new customers'),
+('Summer Special', 'SUMMER20', 20.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 60 DAY), 'Summer season special discount'),
+('Early Bird', 'EARLYBIRD15', 15.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 45 DAY), 'Early booking discount'),
+('Loyalty Reward', 'LOYALTY25', 25.00, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 90 DAY), 'Loyalty customer reward');
 
 -- Insert Hotels (Prices in LKR)
 INSERT INTO hotel (name, location, address, contact_number, email, description, star_rating, price, discount_id) VALUES
@@ -163,24 +59,29 @@ INSERT INTO hotel (name, location, address, contact_number, email, description, 
 ('Budget Inn', 'Colombo', '741 Pettah Market, Colombo 11', '+94 11 012 3456', 'budget@inn.com', 'Affordable accommodation in the bustling market area.', 2, 24000.00, 1),
 ('Seaside Hotel', 'Trincomalee', '852 Nilaveli Beach, Trincomalee', '+94 26 123 4567', 'seaside@hotel.com', 'Beachfront hotel with diving and water sports activities.', 4, 57000.00, 2);
 
--- Insert Hotel Photos
+-- Insert Hotel Admin Users (after hotels are created)
+INSERT INTO user (first_name, last_name, email, password, role, hotel_id) VALUES
+('Hotel', 'Manager', 'manager@sunsetparadise.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'HOTEL_ADMIN', 1),
+('Resort', 'Admin', 'admin@mountainview.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'HOTEL_ADMIN', 2);
+
+-- Insert Hotel Photos (using placeholder image services)
 INSERT INTO hotel_photo (hotel_id, url) VALUES
-(1, '/images/1.jpg'),
-(1, '/images/2.jpg'),
-(2, '/images/3.jpg'),
-(2, '/images/4.jpg'),
-(3, '/images/5.jpg'),
-(3, '/images/6.jpg'),
-(4, '/images/7.jpg'),
-(4, '/images/8.jpg'),
-(5, '/images/9.jpg'),
-(5, '/images/10.jpg'),
-(6, '/images/11.jpg'),
-(7, '/images/1.jpg'),
-(8, '/images/2.jpg'),
-(9, '/images/3.jpg'),
-(10, '/images/4.jpg'),
-(11, '/images/5.jpg');
+(1, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop'),
+(1, 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop'),
+(2, 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop'),
+(2, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'),
+(3, 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop'),
+(3, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&h=600&fit=crop'),
+(4, 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop'),
+(4, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop'),
+(5, 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop'),
+(5, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'),
+(6, 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop'),
+(7, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&h=600&fit=crop'),
+(8, 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop'),
+(9, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop'),
+(10, 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop'),
+(11, 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop');
 
 -- Insert Rooms (Prices in LKR)
 INSERT INTO room (hotel_id, type, price) VALUES
@@ -211,18 +112,18 @@ INSERT INTO hotel_package (hotel_id, package_name, description, price) VALUES
 (4, 'Luxury Beach Package', '3 nights with all meals and water sports', 360000.00),
 (6, 'Family Fun Package', '2 nights with entertainment and meals', 120000.00);
 
--- Insert Sample Bookings (Amounts in LKR)
-INSERT INTO booking (user_id, hotel_id, check_in_date, check_out_date, number_of_guests, number_of_rooms, special_requests, total_amount, status) VALUES
-(1, 1, '2024-02-15', '2024-02-17', 2, 1, 'Late check-in requested', 150000.00, 'CONFIRMED'),
-(2, 2, '2024-02-20', '2024-02-22', 2, 1, 'Vegetarian meals preferred', 108000.00, 'CONFIRMED'),
-(1, 4, '2024-03-01', '2024-03-04', 4, 2, 'Anniversary celebration', 315000.00, 'PENDING'),
-(2, 6, '2024-03-10', '2024-03-12', 3, 1, 'Family with young children', 96000.00, 'CONFIRMED');
+-- Insert Sample Bookings (Amounts in LKR) - Updated with room_id
+INSERT INTO booking (user_id, hotel_id, room_id, check_in_date, check_out_date, number_of_guests, number_of_rooms, special_requests, total_amount, status) VALUES
+(2, 1, 1, DATE_ADD(CURDATE(), INTERVAL 7 DAY), DATE_ADD(CURDATE(), INTERVAL 9 DAY), 2, 1, 'Late check-in requested, anniversary celebration', 150000.00, 'CONFIRMED'),
+(3, 2, 5, DATE_ADD(CURDATE(), INTERVAL 10 DAY), DATE_ADD(CURDATE(), INTERVAL 12 DAY), 2, 1, 'Vegetarian meals preferred, mountain view room', 108000.00, 'CONFIRMED'),
+(2, 4, 11, DATE_ADD(CURDATE(), INTERVAL 15 DAY), DATE_ADD(CURDATE(), INTERVAL 18 DAY), 4, 2, 'Family vacation with children, beachfront villa', 315000.00, 'PENDING'),
+(3, 6, 16, DATE_ADD(CURDATE(), INTERVAL 20 DAY), DATE_ADD(CURDATE(), INTERVAL 22 DAY), 3, 1, 'Family with young children, pool access needed', 96000.00, 'CONFIRMED');
 
--- Insert Sample Payments (Amounts in LKR)
-INSERT INTO payment (booking_id, amount, payment_method, payment_status, transaction_id) VALUES
-(1, 150000.00, 'CREDIT_CARD', 'COMPLETED', 'TXN001234567'),
-(2, 108000.00, 'DEBIT_CARD', 'COMPLETED', 'TXN001234568'),
-(4, 96000.00, 'CREDIT_CARD', 'COMPLETED', 'TXN001234569');
+-- Insert Sample Payments (Amounts in LKR) - Updated to match actual table structure
+INSERT INTO payment (booking_id, amount, method) VALUES
+(1, 150000.00, 'VISA'),
+(2, 108000.00, 'MASTERCARD'),
+(4, 96000.00, 'VISA');
 
 -- Insert Sample Feedback
 INSERT INTO feedback (booking_id, rating, comment) VALUES
@@ -230,17 +131,16 @@ INSERT INTO feedback (booking_id, rating, comment) VALUES
 (2, 4, 'Great location and friendly staff. Room was clean and comfortable.'),
 (4, 5, 'Perfect for families. Kids loved the activities and pool.');
 
--- Create indexes for better performance
-CREATE INDEX idx_hotel_location ON hotel(location);
-CREATE INDEX idx_hotel_star_rating ON hotel(star_rating);
-CREATE INDEX idx_hotel_price ON hotel(price);
-CREATE INDEX idx_booking_user_id ON booking(user_id);
-CREATE INDEX idx_booking_hotel_id ON booking(hotel_id);
-CREATE INDEX idx_booking_check_in ON booking(check_in_date);
-CREATE INDEX idx_booking_status ON booking(status);
-
 -- Show summary
-SELECT 'Database setup completed successfully!' as Status;
-SELECT COUNT(*) as 'Total Hotels' FROM hotel;
+SELECT 'Sample data insertion completed successfully!' as Status;
 SELECT COUNT(*) as 'Total Users' FROM user;
+SELECT COUNT(*) as 'Total Hotels' FROM hotel;
+SELECT COUNT(*) as 'Total Rooms' FROM room;
 SELECT COUNT(*) as 'Total Bookings' FROM booking;
+SELECT COUNT(*) as 'Total Discounts' FROM discount;
+
+-- Show user roles distribution
+SELECT role, COUNT(*) as count FROM user GROUP BY role;
+
+-- Show hotel distribution by location
+SELECT location, COUNT(*) as count FROM hotel GROUP BY location ORDER BY count DESC;

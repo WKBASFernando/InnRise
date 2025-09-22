@@ -1,5 +1,6 @@
 package com.ijse.innrisebackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ijse.innrisebackend.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,5 +19,6 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "booking_id")
+    @JsonIgnore
     private Booking booking;
 }

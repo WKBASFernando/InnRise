@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Authentication</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Debug Authentication</h1>
+    
+    <div>
+        <h2>Test Regular Login</h2>
+        <input type="email" id="email" placeholder="Email" value="angelofernando1609@gmail.com">
+        <input type="password" id="password" placeholder="Password" value="password123">
+        <button onclick="testLogin()">Test Login</button>
+    </div>
+    
+    <div>
+        <h2>Test Google Sign-In</h2>
+        <button onclick="testGoogleLogin()">Test Google Login</button>
+    </div>
+    
+    <div>
+        <h2>Response Log</h2>
+        <pre id="responseLog"></pre>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('responseLog');
+            logElement.textContent += new Date().toISOString() + ': ' + message + '\n';
+            console.log(message);
+        }
+
+        function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            log('Testing regular login...');
+            log('Email: ' + email);
+            log('Password: ' + password);
+            
+            $.ajax({
+                url: 'http://localhost:8080/auth/login',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ email: email, password: password }),
+                success: function(response) {
+                    log('Login Success Response: ' + JSON.stringify(response, null, 2));
+                },
+                error: function(xhr) {
+                    log('Login Error: ' + xhr.status + ' - ' + xhr.responseText);
+                    log('Error Response JSON: ' + JSON.stringify(xhr.responseJSON, null, 2));
+                }
+            });
+        }
+
+        function testGoogleLogin() {
+            log('Testing Google login...');
+            
+            // Simulate a Google token (this won't work, but we can see the error)
+            const mockGoogleToken = 'mock_google_token';
+            
+            $.ajax({
+                url: 'http://localhost:8080/auth/google',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ token: mockGoogleToken }),
+                success: function(response) {
+                    log('Google Login Success Response: ' + JSON.stringify(response, null, 2));
+                },
+                error: function(xhr) {
+                    log('Google Login Error: ' + xhr.status + ' - ' + xhr.responseText);
+                    log('Error Response JSON: ' + JSON.stringify(xhr.responseJSON, null, 2));
+                }
+            });
+        }
+
+        // Test if backend is running
+        $.ajax({
+            url: 'http://localhost:8080/test',
+            type: 'GET',
+            success: function(response) {
+                log('Backend is running: ' + JSON.stringify(response, null, 2));
+            },
+            error: function(xhr) {
+                log('Backend connection failed: ' + xhr.status + ' - ' + xhr.responseText);
+            }
+        });
+    </script>
+</body>
+</html>

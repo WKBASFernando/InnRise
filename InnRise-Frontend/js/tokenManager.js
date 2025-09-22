@@ -1,7 +1,7 @@
 // ===================== TOKEN MANAGEMENT =====================
 class TokenManager {
     constructor() {
-        this.accessToken = localStorage.getItem('bearerToken');
+        this.accessToken = localStorage.getItem('token');
         this.refreshToken = localStorage.getItem('refreshToken');
         this.isRefreshing = false;
         this.failedQueue = [];
@@ -21,7 +21,7 @@ class TokenManager {
     setTokens(accessToken, refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        localStorage.setItem('bearerToken', accessToken);
+        localStorage.setItem('token', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
     }
 
@@ -29,7 +29,7 @@ class TokenManager {
     clearTokens() {
         this.accessToken = null;
         this.refreshToken = null;
-        localStorage.removeItem('bearerToken');
+        localStorage.removeItem('token');
         localStorage.removeItem('refreshToken');
     }
 

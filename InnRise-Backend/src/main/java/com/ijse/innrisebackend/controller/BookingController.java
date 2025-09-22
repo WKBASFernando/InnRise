@@ -63,9 +63,10 @@ public class BookingController {
             LocalDate checkOutDate = LocalDate.parse(request.getCheckOut(), DateTimeFormatter.ISO_LOCAL_DATE);
             
             // Backend business logic: Validate dates
-            if (checkInDate.isBefore(LocalDate.now())) {
+            LocalDate today = LocalDate.now();
+            if (checkInDate.isBefore(today)) {
                 return ResponseEntity.badRequest().body(
-                    new ApiResponse(400, "Check-in date cannot be in the past", null)
+                    new ApiResponse(400, "Check-in date cannot be in the past. Today is: " + today + ", Check-in: " + checkInDate, null)
                 );
             }
             
@@ -90,17 +91,17 @@ public class BookingController {
             booking.setNumberOfRooms(request.getRooms());
             booking.setSpecialRequests(request.getSpecialRequests());
             booking.setTotalAmount(totalAmount); // Backend calculated amount using room price
-            booking.setStatus("CONFIRMED");
+            booking.setStatus("PENDING"); // Booking is pending until payment is processed
             
             // Save booking
             Booking savedBooking = bookingRepository.save(booking);
             
-            log.info("Booking created successfully with ID: {}", savedBooking.getBookingId());
+            log.info("Booking created successfully with ID: {} (Status: PENDING - Payment required)", savedBooking.getBookingId());
             
             return ResponseEntity.ok(
                 new ApiResponse(
                     200,
-                    "Booking created successfully",
+                    "Booking created successfully. Payment required to confirm booking.",
                     new BookingResponse(
                         savedBooking.getBookingId(),
                         hotel.getName(),

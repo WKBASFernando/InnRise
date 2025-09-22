@@ -8,53 +8,61 @@ $(document).ready(function() {
     initializeAdminDashboard();
 });
 
-function initializeAdminDashboard() {
-    // Check if user is logged in and has admin role
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '../index.html';
-        return;
-    }
-    
-    // Decode token to get user info
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        currentUser = payload;
-        
-        // Check if user has admin role
-        if (payload.role !== 'ADMIN') {
-            alert('Access denied. Admin privileges required.');
-            window.location.href = '../index.html';
-            return;
-        }
-        
-        // Update admin info display
-        $('#adminInfo').html(`<i class="fas fa-user-shield me-1"></i>${payload.firstName} ${payload.lastName}`);
-        
-        // Load dashboard data
-        loadDashboardData();
-        
-    } catch (error) {
-        console.error('Error decoding token:', error);
-        localStorage.removeItem('token');
-        window.location.href = '../index.html';
-    }
-}
+// function initializeAdminDashboard() {
+//     // Check if user is logged in and has admin role
+//     const token = localStorage.getItem('token');
+//     if (!token) {
+//         window.location.href = 'signin.html';
+//         return;
+//     }
+//
+//     // Decode token to get user info
+//     try {
+//         const payload = JSON.parse(atob(token.split('.')[1]));
+//         currentUser = payload;
+//
+//         // Check if user has admin role
+//         if (payload.role !== 'ADMIN') {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Access Denied',
+//                 text: 'Admin privileges required to access this page.',
+//                 confirmButtonText: 'Go to Login',
+//                 confirmButtonColor: '#f97316',
+//                 allowOutsideClick: false
+//             }).then(() => {
+//                 window.location.href = 'signin.html';
+//             });
+//             return;
+//         }
+//
+//         // Update admin info display
+//         $('#adminInfo').html(`<i class="fas fa-user-shield me-1"></i>${payload.firstName} ${payload.lastName}`);
+//
+//         // Load dashboard data
+//         loadDashboardData();
+//
+//     } catch (error) {
+//         console.error('Error decoding token:', error);
+//         localStorage.removeItem('token');
+//         window.location.href = 'signin.html';
+//     }
+// }
 
 // ==================== NAVIGATION ====================
 function showSection(sectionName) {
     // Hide all sections
     $('.content-section').hide();
-    
+
     // Show selected section
     $(`#${sectionName}-section`).show();
-    
+
     // Update active nav link
     $('.nav-link').removeClass('active');
     $(`.nav-link[onclick="showSection('${sectionName}')"]`).addClass('active');
-    
+
     currentSection = sectionName;
-    
+
     // Load section-specific data
     switch(sectionName) {
         case 'dashboard':
@@ -145,7 +153,7 @@ function loadTotalRevenue() {
 function loadHotels() {
     const tbody = $('#hotelsTableBody');
     tbody.html('<tr><td colspan="7" class="text-center loading"><i class="fas fa-spinner fa-spin"></i> Loading hotels...</td></tr>');
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/hotels',
         method: 'GET',
@@ -166,12 +174,12 @@ function loadHotels() {
 
 function displayHotels(hotels) {
     const tbody = $('#hotelsTableBody');
-    
+
     if (!hotels || hotels.length === 0) {
         tbody.html('<tr><td colspan="7" class="text-center">No hotels found</td></tr>');
         return;
     }
-    
+
     let html = '';
     hotels.forEach(hotel => {
         html += `
@@ -199,7 +207,7 @@ function displayHotels(hotels) {
             </tr>
         `;
     });
-    
+
     tbody.html(html);
 }
 
@@ -219,7 +227,7 @@ function addHotel() {
         price: parseFloat($('#hotelPrice').val()),
         description: $('#hotelDescription').val()
     };
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/hotels',
         method: 'POST',
@@ -273,7 +281,7 @@ function deleteHotel(hotelId) {
 function loadDiscounts() {
     const tbody = $('#discountsTableBody');
     tbody.html('<tr><td colspan="7" class="text-center loading"><i class="fas fa-spinner fa-spin"></i> Loading discounts...</td></tr>');
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/discounts',
         method: 'GET',
@@ -294,12 +302,12 @@ function loadDiscounts() {
 
 function displayDiscounts(discounts) {
     const tbody = $('#discountsTableBody');
-    
+
     if (!discounts || discounts.length === 0) {
         tbody.html('<tr><td colspan="7" class="text-center">No discounts found</td></tr>');
         return;
     }
-    
+
     let html = '';
     discounts.forEach(discount => {
         const isActive = new Date(discount.validTo) > new Date();
@@ -328,7 +336,7 @@ function displayDiscounts(discounts) {
             </tr>
         `;
     });
-    
+
     tbody.html(html);
 }
 
@@ -345,7 +353,7 @@ function addDiscount() {
         validTo: $('#discountValidTo').val(),
         description: $('#discountDescription').val()
     };
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/discounts',
         method: 'POST',
@@ -399,7 +407,7 @@ function deleteDiscount(discountId) {
 function loadUsers() {
     const tbody = $('#usersTableBody');
     tbody.html('<tr><td colspan="7" class="text-center loading"><i class="fas fa-spinner fa-spin"></i> Loading users...</td></tr>');
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/users',
         method: 'GET',
@@ -420,12 +428,12 @@ function loadUsers() {
 
 function displayUsers(users) {
     const tbody = $('#usersTableBody');
-    
+
     if (!users || users.length === 0) {
         tbody.html('<tr><td colspan="7" class="text-center">No users found</td></tr>');
         return;
     }
-    
+
     let html = '';
     users.forEach(user => {
         const roleBadge = getRoleBadge(user.role);
@@ -452,7 +460,7 @@ function displayUsers(users) {
             </tr>
         `;
     });
-    
+
     tbody.html(html);
 }
 
@@ -495,7 +503,7 @@ function loadHotelsForUserSelection() {
 function toggleHotelSelection() {
     const role = $('#userRole').val();
     const hotelDiv = $('#hotelSelectionDiv');
-    
+
     if (role === 'HOTEL_ADMIN') {
         hotelDiv.show();
         $('#userHotel').prop('required', true);
@@ -513,12 +521,12 @@ function addUser() {
         password: $('#userPassword').val(),
         role: $('#userRole').val()
     };
-    
+
     // Add hotel ID if role is HOTEL_ADMIN
     if (formData.role === 'HOTEL_ADMIN') {
         formData.hotelId = $('#userHotel').val();
     }
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/users',
         method: 'POST',
@@ -572,7 +580,7 @@ function deleteUser(userId) {
 function loadBookings() {
     const tbody = $('#bookingsTableBody');
     tbody.html('<tr><td colspan="9" class="text-center loading"><i class="fas fa-spinner fa-spin"></i> Loading bookings...</td></tr>');
-    
+
     $.ajax({
         url: 'http://localhost:8080/api/innrise/admin/bookings',
         method: 'GET',
@@ -593,12 +601,12 @@ function loadBookings() {
 
 function displayBookings(bookings) {
     const tbody = $('#bookingsTableBody');
-    
+
     if (!bookings || bookings.length === 0) {
         tbody.html('<tr><td colspan="9" class="text-center">No bookings found</td></tr>');
         return;
     }
-    
+
     let html = '';
     bookings.forEach(booking => {
         const statusBadge = getBookingStatusBadge(booking.status);
@@ -628,7 +636,7 @@ function displayBookings(bookings) {
             </tr>
         `;
     });
-    
+
     tbody.html(html);
 }
 
@@ -698,13 +706,13 @@ function showAlert(message, type) {
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     `;
-    
+
     // Remove existing alerts
     $('.alert').remove();
-    
+
     // Add new alert at the top of the main content
     $('main').prepend(alertHtml);
-    
+
     // Auto-dismiss after 5 seconds
     setTimeout(() => {
         $('.alert').fadeOut();
@@ -713,5 +721,6 @@ function showAlert(message, type) {
 
 function logout() {
     localStorage.removeItem('token');
-    window.location.href = '../index.html';
+    localStorage.removeItem('user');
+    window.location.href = 'signin.html';
 }

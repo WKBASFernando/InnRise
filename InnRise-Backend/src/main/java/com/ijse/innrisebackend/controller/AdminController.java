@@ -4,6 +4,7 @@ import com.ijse.innrisebackend.dto.ApiResponse;
 import com.ijse.innrisebackend.entity.*;
 import com.ijse.innrisebackend.enums.Role;
 import com.ijse.innrisebackend.repository.*;
+import com.ijse.innrisebackend.service.BookingCleanupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final DiscountRepository discountRepository;
     private final RoomRepository roomRepository;
+    private final BookingCleanupService bookingCleanupService;
     
     // ==================== DASHBOARD STATS ====================
     
@@ -83,7 +85,7 @@ public class AdminController {
     // ==================== HOTELS MANAGEMENT ====================
     
     @GetMapping("/hotels")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> getAllHotels() {
         try {
             List<Hotel> hotels = hotelRepository.findAll();
@@ -114,7 +116,7 @@ public class AdminController {
     }
     
     @PutMapping("/hotels/{hotelId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> updateHotel(@PathVariable Long hotelId, @RequestBody Hotel hotel) {
         try {
             Optional<Hotel> existingHotel = hotelRepository.findById(hotelId);
@@ -254,7 +256,6 @@ public class AdminController {
     }
     
     @PostMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> addUser(@RequestBody AddUserRequest request) {
         try {
             // Validate required fields
@@ -293,7 +294,6 @@ public class AdminController {
     }
     
     @PutMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateUser(@PathVariable Long userId, @RequestBody User user) {
         try {
             Optional<User> existingUser = userRepository.findById(userId);
@@ -319,7 +319,6 @@ public class AdminController {
     }
     
     @DeleteMapping("/users/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {
             Optional<User> user = userRepository.findById(userId);
@@ -340,7 +339,7 @@ public class AdminController {
     // ==================== BOOKINGS MANAGEMENT ====================
     
     @GetMapping("/bookings")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> getAllBookings() {
         try {
             List<Booking> bookings = bookingRepository.findAll();
@@ -352,7 +351,7 @@ public class AdminController {
     }
     
     @PutMapping("/bookings/{bookingId}/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> updateBookingStatus(@PathVariable Long bookingId, @RequestBody UpdateBookingStatusRequest request) {
         try {
             Optional<Booking> booking = bookingRepository.findById(bookingId);
@@ -390,7 +389,6 @@ public class AdminController {
     // ==================== ROOM MANAGEMENT ====================
     
     @PostMapping("/rooms")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> addRoom(@RequestBody AddRoomRequest request) {
         try {
             // Validate hotel exists
@@ -415,7 +413,6 @@ public class AdminController {
     }
     
     @DeleteMapping("/rooms/{roomId}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('HOTEL_ADMIN')")
     public ResponseEntity<ApiResponse> deleteRoom(@PathVariable Long roomId) {
         try {
             Optional<Room> room = roomRepository.findById(roomId);
@@ -483,5 +480,22 @@ public class AdminController {
         
         public Long getHotelId() { return hotelId; }
         public void setHotelId(Long hotelId) { this.hotelId = hotelId; }
+    }
+    
+    // ==================== BOOKING CLEANUP ====================
+    
+    @PostMapping("/cleanup/unpaid-bookings")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> cleanupUnpaidBookings() {
+        try {
+            int cleanedCount = bookingCleanupService.manualCleanupUnpaidBookings();
+            return ResponseEntity.ok(new ApiResponse(200, 
+                "Cleanup completed successfully", 
+                "Cleaned up " + cleanedCount + " unpaid bookings"));
+        } catch (Exception e) {
+            log.error("Error during manual cleanup", e);
+            return ResponseEntity.status(500).body(
+                new ApiResponse(500, "Error during cleanup", e.getMessage()));
+        }
     }
 }

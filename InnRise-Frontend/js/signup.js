@@ -33,15 +33,28 @@ function handleGoogleCredentialResponse(response) {
     data: JSON.stringify({ token: response.credential }),
     success: function(res) {
       if (res.data && res.data.accessToken) {
-        localStorage.setItem('bearerToken', res.data.accessToken);
+        localStorage.setItem('token', res.data.accessToken);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
         window.location.href = '../index.html';
       } else {
-        alert(res.message || 'No token received');
+        Swal.fire({
+          icon: 'error',
+          title: 'Signup Failed',
+          text: res.message || 'No token received',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       }
     },
     error: function(err) {
       console.error('Google login error:', err);
-      alert('Google login failed');
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Signup Failed',
+        text: 'Google signup failed. Please try again.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
     }
   });
 }
@@ -53,11 +66,57 @@ function goToSignIn() {
 }
 
 function showTerms() {
-  alert("Terms of Service would be displayed here in a modal or new page.");
+  Swal.fire({
+    title: 'Terms of Service',
+    html: `
+      <div style="text-align: left; max-height: 400px; overflow-y: auto;">
+        <h4>1. Acceptance of Terms</h4>
+        <p>By using InnRise, you agree to be bound by these Terms of Service.</p>
+        
+        <h4>2. Use License</h4>
+        <p>Permission is granted to temporarily use InnRise for personal, non-commercial transitory viewing only.</p>
+        
+        <h4>3. User Accounts</h4>
+        <p>You are responsible for maintaining the confidentiality of your account and password.</p>
+        
+        <h4>4. Booking and Payment</h4>
+        <p>All bookings are subject to availability and payment terms.</p>
+        
+        <h4>5. Cancellation Policy</h4>
+        <p>Cancellation policies vary by hotel and booking type.</p>
+      </div>
+    `,
+    width: 600,
+    confirmButtonText: 'I Understand',
+    confirmButtonColor: '#f97316'
+  });
 }
 
 function showPrivacy() {
-  alert("Privacy Policy would be displayed here in a modal or new page.");
+  Swal.fire({
+    title: 'Privacy Policy',
+    html: `
+      <div style="text-align: left; max-height: 400px; overflow-y: auto;">
+        <h4>1. Information We Collect</h4>
+        <p>We collect information you provide directly to us, such as when you create an account or make a booking.</p>
+        
+        <h4>2. How We Use Your Information</h4>
+        <p>We use the information we collect to provide, maintain, and improve our services.</p>
+        
+        <h4>3. Information Sharing</h4>
+        <p>We do not sell, trade, or otherwise transfer your personal information to third parties.</p>
+        
+        <h4>4. Data Security</h4>
+        <p>We implement appropriate security measures to protect your personal information.</p>
+        
+        <h4>5. Your Rights</h4>
+        <p>You have the right to access, update, or delete your personal information.</p>
+      </div>
+    `,
+    width: 600,
+    confirmButtonText: 'I Understand',
+    confirmButtonColor: '#f97316'
+  });
 }
 
 // ====== Password strength checker ======
@@ -151,22 +210,46 @@ $(document).ready(function () {
     const btn = $("#signupBtn");
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      alert("Please fill in all required fields");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Information',
+        text: 'Please fill in all required fields',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Password Mismatch',
+        text: 'Passwords do not match',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       return;
     }
 
     if (password.length < 8) {
-      alert("Password must be at least 8 characters long");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Password Too Short',
+        text: 'Password must be at least 8 characters long',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       return;
     }
 
     if (!terms) {
-      alert("Please agree to the Terms of Service and Privacy Policy");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Terms Agreement Required',
+        text: 'Please agree to the Terms of Service and Privacy Policy',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       return;
     }
 
@@ -185,13 +268,20 @@ $(document).ready(function () {
       }),
       success: function (response) {
         if (response.data && response.data.accessToken) {
-          localStorage.setItem("bearerToken", response.data.accessToken);
+          localStorage.setItem("token", response.data.accessToken);
+          localStorage.setItem("refreshToken", response.data.refreshToken);
         }
         window.location.href = "../index.html";
       },
       error: function (xhr) {
         console.error("Signup failed:", xhr.responseText);
-        alert(`Error: ${xhr.responseJSON?.message || "Signup failed 😢"}`);
+        Swal.fire({
+          icon: 'error',
+          title: 'Signup Failed',
+          text: xhr.responseJSON?.message || "Signup failed. Please try again.",
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
       },
       complete: function () {
         btn.text("Create Account").prop("disabled", false);

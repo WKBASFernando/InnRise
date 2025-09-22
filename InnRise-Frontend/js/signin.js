@@ -9,19 +9,35 @@ function initGoogleSignIn() {
   gsiScript.onload = () => {
     console.log('Google Identity Services loaded');
 
-    google.accounts.id.initialize({
-      client_id: '427810863490-vvr3a2jimu7ki8du7up4ofatfteqrit0.apps.googleusercontent.com',
-      callback: handleGoogleCredentialResponse,
-      auto_select: false,
-      cancel_on_tap_outside: true
+    try {
+      google.accounts.id.initialize({
+        client_id: '427810863490-vvr3a2jimu7ki8du7up4ofatfteqrit0.apps.googleusercontent.com',
+        callback: handleGoogleCredentialResponse,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+
+      // Render Google's default button
+      google.accounts.id.renderButton(
+        document.getElementById('google-btn'),
+        { theme: 'outline', size: 'large', width: 300 }
+      );
+
+      // google.accounts.id.prompt(); // optional auto prompt
+    } catch (error) {
+      console.error('Error initializing Google Sign-In:', error);
+    }
+  };
+
+  gsiScript.onerror = () => {
+    console.error('Failed to load Google Identity Services');
+    Swal.fire({
+      icon: 'error',
+      title: 'Google Sign-In Unavailable',
+      text: 'Unable to load Google Sign-In. Please try manual login.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
     });
-
-    google.accounts.id.renderButton(
-      document.getElementById('google-btn'),
-      { theme: 'outline', size: 'large', width: 300 }
-    );
-
-    google.accounts.id.prompt(); // optional auto prompt
   };
 }
 
@@ -33,36 +49,53 @@ function handleGoogleCredentialResponse(response) {
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({ token: response.credential }),
-    success: function(res) {
-      if (res.data && res.data.accessToken) {
-        localStorage.setItem('bearerToken', res.data.accessToken);
-        localStorage.setItem('refreshToken', res.data.refreshToken);
-        
-        // Decode token to get user role and redirect accordingly
-        try {
-          const payload = JSON.parse(atob(res.data.accessToken.split('.')[1]));
-          const userRole = payload.role;
-          
-          // Redirect based on role
-          if (userRole === 'ADMIN') {
-            window.location.href = 'admin-dashboard.html';
-          } else if (userRole === 'HOTEL_ADMIN') {
-            window.location.href = 'hotel-admin-dashboard.html';
-          } else {
-            window.location.href = '../index.html';
-          }
-        } catch (error) {
-          console.error('Error decoding token:', error);
-          // Fallback to default redirect
-          window.location.href = '../index.html';
-        }
-      } else {
-        alert(res.message || 'No token received');
-      }
-    },
+        success: function(res) {
+            console.log('Google Sign-In Response:', res);
+            console.log('Response data:', res.data);
+            
+            // Check if response has the expected structure
+            if (!res.data || !res.data.accessToken) {
+                console.error('Invalid response structure:', res);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Login Failed',
+                  text: 'Invalid response from server',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: '#f97316'
+                });
+                return;
+            }
+            
+            // Store token and user info
+            localStorage.setItem('token', res.data.accessToken);
+            localStorage.setItem('refreshToken', res.data.refreshToken);
+            
+            // Decode token to get role
+            const token = res.data.accessToken;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const role = payload.role;
+            
+            // Redirect based on role
+            if (role === 'ADMIN') {
+                window.location.href = 'admin-dashboard.html';
+            } else if (role === 'HOTEL_ADMIN') {
+                window.location.href = 'hotel-admin-dashboard.html';
+            } else {
+                window.location.href = '../index.html';
+            }
+        },
     error: function(err) {
       console.error('Google login error:', err);
-      alert('Google login failed');
+      console.error('Error response:', err.responseJSON);
+      console.error('Error status:', err.status);
+      console.error('Error text:', err.responseText);
+      Swal.fire({
+        icon: 'error',
+        title: 'Google Login Failed',
+        text: err.responseJSON?.message || err.responseText || 'Unknown error',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
     }
   });
 }
@@ -76,7 +109,13 @@ function handleSignIn(event) {
   const btn = $('#signinBtn');
 
   if (!email || !password) {
-    alert('Please fill in all fields');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Missing Information',
+      text: 'Please fill in all fields',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
     return;
   }
 
@@ -89,34 +128,41 @@ function handleSignIn(event) {
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({ email: email, password: password }),
-    success: function(response) {
-      if (response.data && response.data.accessToken) {
-        localStorage.setItem('bearerToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-        
-        // Decode token to get user role and redirect accordingly
-        try {
-          const payload = JSON.parse(atob(response.data.accessToken.split('.')[1]));
-          const userRole = payload.role;
-          
-          // Redirect based on role
-          if (userRole === 'ADMIN') {
-            window.location.href = 'admin-dashboard.html';
-          } else if (userRole === 'HOTEL_ADMIN') {
-            window.location.href = 'hotel-admin-dashboard.html';
-          } else {
-            window.location.href = '../index.html';
-          }
-        } catch (error) {
-          console.error('Error decoding token:', error);
-          // Fallback to default redirect
-          window.location.href = '../index.html';
-        }
-      } else {
-        alert(response.message || 'Login successful but no token received');
-        console.log('Full backend response:', response);
-      }
-    },
+        success: function(response) {
+            console.log('Login Response:', response);
+            console.log('Response data:', response.data);
+            
+            // Check if response has the expected structure
+            if (!response.data || !response.data.accessToken) {
+                console.error('Invalid response structure:', response);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Login Failed',
+                  text: 'Invalid response from server',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: '#f97316'
+                });
+                return;
+            }
+            
+            // Store token and user info
+            localStorage.setItem('token', response.data.accessToken);
+            localStorage.setItem('refreshToken', response.data.refreshToken);
+            
+            // Decode token to get role
+            const token = response.data.accessToken;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const role = payload.role;
+            
+            // Redirect based on role
+            if (role === 'ADMIN') {
+                window.location.href = 'admin-dashboard.html';
+            } else if (role === 'HOTEL_ADMIN') {
+                window.location.href = 'hotel-admin-dashboard.html';
+            } else {
+                window.location.href = '../index.html';
+            }
+        },
     error: function(xhr) {
       console.error('Login error:', xhr);
       let errMsg = 'Login failed';
@@ -132,7 +178,13 @@ function handleSignIn(event) {
         }
       }
       
-      alert(`Error: ${errMsg}`);
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Error',
+        text: errMsg,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
       console.error('Full error response:', xhr.responseText);
     },
     complete: function() {
@@ -145,10 +197,32 @@ function handleSignIn(event) {
 
 // ===================== FORGOT PASSWORD =====================
 function handleForgotPassword() {
-  const email = prompt('Enter your email address to reset your password:');
-  if (email) {
-    alert(`Password reset link sent to ${email}`);
-  }
+  Swal.fire({
+    title: 'Password Reset',
+    input: 'email',
+    inputLabel: 'Enter your email address',
+    inputPlaceholder: 'your@email.com',
+    showCancelButton: true,
+    confirmButtonText: 'Send Reset Link',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#f97316',
+    cancelButtonColor: '#6c757d',
+    inputValidator: (value) => {
+      if (!value) {
+        return 'You need to enter an email address!';
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Reset Link Sent',
+        text: `Password reset link sent to ${result.value}`,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
+    }
+  });
 }
 
 // ===================== NAV TO SIGNUP =====================

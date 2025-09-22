@@ -12,8 +12,16 @@ let filteredHotels = []; // Hotels after filtering
 function checkAuthToken() {
   if (!window.tokenManager.isAuthenticated()) {
     // No token found, redirect to login page
-    alert('Please log in to access hotel listings.');
-    window.location.href = 'signin.html';
+    Swal.fire({
+      icon: 'warning',
+      title: 'Authentication Required',
+      text: 'Please log in to access hotel listings.',
+      confirmButtonText: 'Go to Login',
+      confirmButtonColor: '#f97316',
+      allowOutsideClick: false
+    }).then(() => {
+      window.location.href = 'signin.html';
+    });
     return false;
   }
   
@@ -515,15 +523,32 @@ function bookHotel(hotelId) {
   if (hotel) {
     openBookingModal(hotel);
   } else {
-    alert('Hotel information not found. Please refresh the page and try again.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Hotel Not Found',
+      text: 'Hotel information not found. Please refresh the page and try again.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
   }
 }
 
 // ================= LOGOUT =================
 function logout() {
-  if (confirm('Are you sure you want to logout?')) {
-    window.tokenManager.logout();
-  }
+  Swal.fire({
+    title: 'Logout Confirmation',
+    text: 'Are you sure you want to logout?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Logout',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#f97316',
+    cancelButtonColor: '#6c757d'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.tokenManager.logout();
+    }
+  });
 }
 
 // ================= SHORTCUT KEYS =================
@@ -720,11 +745,27 @@ function openBookingModal(hotel) {
 }
 
 function closeBookingModal() {
+  // Check if payment form is visible (booking created but payment not completed)
+  if ($('#paymentForm').is(':visible')) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Payment Required',
+      text: 'Please complete your payment to confirm your booking, or contact support to cancel.',
+      confirmButtonText: 'Continue Payment',
+      confirmButtonColor: '#f97316',
+      showCancelButton: true,
+      cancelButtonText: 'Contact Support',
+      cancelButtonColor: '#6c757d'
+    });
+    return; // Prevent closing modal
+  }
+  
   $('#bookingModal').fadeOut(300);
   $('body').css('overflow', 'auto'); // Restore scrolling
   currentBookingHotel = null;
   currentBookingRooms = [];
   selectedRoomId = null;
+  window.currentBookingData = null; // Clear booking data
 }
 
 // ================= ROOM SELECTION FUNCTIONS =================
@@ -887,13 +928,25 @@ function handleBookingFormSubmit(event) {
   event.preventDefault();
   
   if (!currentBookingHotel) {
-    alert('Hotel information not found. Please try again.');
+    Swal.fire({
+      icon: 'error',
+      title: 'Booking Error',
+      text: 'Hotel information not found. Please try again.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
     return;
   }
   
   // Backend validation: Check if room is selected
   if (!selectedRoomId) {
-    alert('Please select a room type before confirming your booking.');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Room Selection Required',
+      text: 'Please select a room type before confirming your booking.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
     return;
   }
   
@@ -956,10 +1009,18 @@ function submitBookingToBackend(formData) {
     data: JSON.stringify(bookingData),
     success: function(response) {
       if (response.status === 200) {
-        alert(`Booking confirmed successfully!\n\nBooking ID: ${response.data.bookingId}\nHotel: ${response.data.hotelName}\nTotal: LKR ${response.data.totalAmount}\n\nYou will receive a confirmation email shortly.`);
-        closeBookingModal();
+        // Show payment form instead of closing modal
+        showPaymentForm(response.data);
       } else {
-        alert('Error: ' + response.message);
+        // Show error alert for non-200 responses
+        Swal.fire({
+          icon: 'error',
+          title: 'Booking Failed',
+          text: response.message,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#f97316'
+        });
+        console.error('Booking error:', response.message);
       }
     },
     error: function(xhr) {
@@ -972,13 +1033,203 @@ function submitBookingToBackend(formData) {
         errorMessage = 'Network error. Please check if the server is running.';
       }
       
-      alert('Error: ' + errorMessage);
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Booking Error',
+        text: errorMessage,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
     },
     complete: function() {
       // Restore button state
       confirmBtn.prop('disabled', false).text(originalText);
     }
   });
+}
+
+// ==================== PAYMENT PROCESSING ====================
+function showPaymentForm(bookingData) {
+  // Hide booking form and show payment form
+  $('#bookingForm').hide();
+  $('#paymentForm').show();
+  
+  // Update payment summary
+  $('#paymentBookingId').text(bookingData.bookingId);
+  $('#paymentHotelName').text(bookingData.hotelName);
+  $('#paymentRoomType').text(bookingData.roomType);
+  $('#paymentCheckIn').text(bookingData.checkIn);
+  $('#paymentCheckOut').text(bookingData.checkOut);
+  $('#paymentTotal').text('LKR ' + bookingData.totalAmount.toLocaleString());
+  
+  // Store booking data for payment processing
+  window.currentBookingData = bookingData;
+}
+
+function processPayment() {
+  const paymentData = {
+    bookingId: window.currentBookingData.bookingId,
+    amount: window.currentBookingData.totalAmount,
+    method: $('#paymentMethod').val(),
+    cardNumber: $('#cardNumber').val(),
+    expiryDate: $('#expiryDate').val(),
+    cvv: $('#cvv').val(),
+    cardholderName: $('#cardholderName').val(),
+    billingAddress: $('#billingAddress').val(),
+    city: $('#city').val(),
+    postalCode: $('#postalCode').val(),
+    country: $('#country').val()
+  };
+  
+  console.log('Payment data:', paymentData);
+  console.log('Current booking data:', window.currentBookingData);
+  
+  // Validate payment form
+  if (!validatePaymentForm(paymentData)) {
+    return;
+  }
+  
+  // Show loading state
+  const payBtn = $('#processPaymentBtn');
+  const originalText = payBtn.text();
+  payBtn.prop('disabled', true).text('Processing Payment...');
+  
+  $.ajax({
+    url: 'http://localhost:8080/api/innrise/payment/process',
+    method: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(paymentData),
+    success: function(response) {
+      console.log('Payment response:', response);
+      if (response.status === 200 && response.data.success) {
+        // Payment successful
+        showPaymentSuccess(response.data);
+      } else {
+        console.error('Payment failed:', response);
+        Swal.fire({
+          icon: 'error',
+          title: 'Payment Failed',
+          text: response.data?.message || response.message,
+          confirmButtonText: 'Try Again',
+          confirmButtonColor: '#f97316'
+        });
+      }
+    },
+    error: function(xhr) {
+      console.error('Payment error:', xhr);
+      console.error('Response text:', xhr.responseText);
+      console.error('Response JSON:', xhr.responseJSON);
+      let errorMessage = 'Payment processing failed. Please try again.';
+      
+      if (xhr.responseJSON?.message) {
+        errorMessage = xhr.responseJSON.message;
+      } else if (xhr.responseText) {
+        errorMessage = xhr.responseText;
+      } else if (xhr.status === 0) {
+        errorMessage = 'Network error. Please check if the server is running.';
+      }
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Payment Error',
+        text: errorMessage,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#f97316'
+      });
+    },
+    complete: function() {
+      // Restore button state
+      payBtn.prop('disabled', false).text(originalText);
+    }
+  });
+}
+
+function validatePaymentForm(paymentData) {
+  if (!paymentData.method) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Payment Method Required',
+      text: 'Please select a payment method.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
+    return false;
+  }
+  
+  if (!paymentData.cardNumber || paymentData.cardNumber.length < 16) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Invalid Card Number',
+      text: 'Please enter a valid card number.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
+    return false;
+  }
+  
+  if (!paymentData.expiryDate) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Expiry Date Required',
+      text: 'Please enter card expiry date.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
+    return false;
+  }
+  
+  if (!paymentData.cvv || paymentData.cvv.length < 3) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Invalid CVV',
+      text: 'Please enter a valid CVV.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
+    return false;
+  }
+  
+  if (!paymentData.cardholderName) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Cardholder Name Required',
+      text: 'Please enter cardholder name.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#f97316'
+    });
+    return false;
+  }
+  
+  return true;
+}
+
+function showPaymentSuccess(paymentData) {
+  // Hide payment form and show success message
+  $('#paymentForm').hide();
+  $('#paymentSuccess').show();
+  
+  // Update success details
+  $('#successBookingId').text(paymentData.bookingId);
+  $('#successTransactionId').text(paymentData.transactionId);
+  $('#successAmount').text('LKR ' + paymentData.amount.toLocaleString());
+  $('#successMethod').text(paymentData.method);
+}
+
+function backToBookingForm() {
+  $('#paymentForm').hide();
+  $('#paymentSuccess').hide();
+  $('#bookingForm').show();
+}
+
+function closePaymentModal() {
+  closeBookingModal();
+  // Reset forms
+  $('#bookingForm').show();
+  $('#paymentForm').hide();
+  $('#paymentSuccess').hide();
+  $('#bookingForm')[0].reset();
+  $('#paymentForm')[0].reset();
 }
 
 // Initialize booking modal event listeners
@@ -1009,6 +1260,17 @@ $(document).ready(function() {
   // Close modal when clicking outside
   $('#bookingModal').on('click', function(e) {
     if (e.target === this) {
+      // Don't allow closing by clicking outside if payment form is visible
+      if ($('#paymentForm').is(':visible')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Payment Required',
+          text: 'Please complete your payment to confirm your booking.',
+          confirmButtonText: 'Continue Payment',
+          confirmButtonColor: '#f97316'
+        });
+        return;
+      }
       closeBookingModal();
     }
   });
@@ -1016,6 +1278,17 @@ $(document).ready(function() {
   // Close modal with Escape key
   $(document).on('keydown', function(e) {
     if (e.key === 'Escape' && $('#bookingModal').is(':visible')) {
+      // Don't allow closing with Escape if payment form is visible
+      if ($('#paymentForm').is(':visible')) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Payment Required',
+          text: 'Please complete your payment to confirm your booking.',
+          confirmButtonText: 'Continue Payment',
+          confirmButtonColor: '#f97316'
+        });
+        return;
+      }
       closeBookingModal();
     }
   });
