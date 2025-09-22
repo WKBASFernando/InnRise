@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnRise - Sign Up</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+      url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80') center/cover no-repeat;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(247, 147, 30, 0.1) 100%);
+      animation: backgroundPulse 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes backgroundPulse {
+      0% { opacity: 0.1; }
+      100% { opacity: 0.25; }
+    }
+
+    .auth-container {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(25px);
+      border-radius: 28px;
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.25);
+      padding: 50px 45px;
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 5px;
+      background: linear-gradient(90deg, #ff6b35, #f7931e, #ffd23f, #ff6b35, #f7931e);
+      animation: shimmer 4s infinite;
+    }
+
+    @keyframes shimmer {
+
+    }
+
+    /*@keyframes shimmer {*/
+    /*  0% { transform: translateX(-100%); }*/
+    /*  100% { transform: translateX(100%); }*/
+    /*}*/
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 35px;
+    }
+
+    .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 14px;
+      transform: rotate(-8deg);
+      transition: all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.35);
+    }
+
+    .logo-icon:hover {
+      transform: rotate(8deg) scale(1.15);
+      box-shadow: 0 15px 40px rgba(255, 107, 53, 0.45);
+    }
+
+    .logo-icon::before {
+      content: '🏨';
+      font-size: 24px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+    }
+
+    .logo-text {
+      font-size: 34px;
+      font-weight: 900;
+      color: #2d3748;
+      text-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .logo-text span {
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .auth-title {
+      font-size: 38px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      background: linear-gradient(45deg, #2d3748, #4a5568);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .auth-subtitle {
+      color: #718096;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    #google-btn {
+      width: 100%;
+      /*padding: 20px;*/
+      /*border: 2px solid rgba(226, 232, 240, 0.9);*/
+      /*border-radius: 18px;*/
+      /*background: rgba(255, 255, 255, 0.95);*/
+      /*backdrop-filter: blur(15px);*/
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #2d3748;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /*#google-btn::before {*/
+    /*  content: '';*/
+    /*  position: absolute;*/
+    /*  top: 0;*/
+    /*  left: -100%;*/
+    /*  width: 100%;*/
+    /*  height: 100%;*/
+    /*  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);*/
+    /*  transition: left 0.7s;*/
+    /*}*/
+
+    /*#google-btn:hover::before {*/
+    /*  left: 100%;*/
+    /*}*/
+
+    /*#google-btn:hover {*/
+    /*  border-color: #ff6b35;*/
+    /*  background: white;*/
+    /*  transform: translateY(-4px);*/
+    /*  box-shadow: 0 15px 40px rgba(255, 107, 53, 0.3);*/
+    /*}*/
+
+    .google-icon {
+      width: 26px;
+      height: 26px;
+      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyLjU2IDEyLjI1QzIyLjU2IDExLjQ3IDIyLjQ5IDEwLjcyIDIyLjM2IDEwSDE2VjE0LjI2SDIwLjczQzIwLjU0IDE1LjM3IDIwLjAzIDE2LjM2IDE5LjI4IDE3LjA1VjE5LjFIMjEuNTZDMjEuOTUgMTYuNDQgMjIuNTYgMTQuNzUgMjIuNTYgMTIuMjVaIiBmaWxsPSIjNDI4NUY0Ii8+CjxwYXRoIGQ9Ik0xNiAyMkMxOC40MyAyMiAyMC40NyAyMS4yNCAyMS41NiAxOS4xTDE5LjI4IDE3LjA1QzE4LjU4IDE3LjU5IDE3LjU2IDE3Ljk0IDE2IDE3Ljk0QzEzLjY3IDE3Ljk0IDExLjc0IDE2LjM4IDExLjAzIDE0LjI2SDguNjZWMTYuMzlDOS42MiAxOC4yNCAxMi42MiAyMiAxNiAyMloiIGZpbGw9IiMzNEE4NTMiLz4KPHBhdGggZD0iTTExLjAzIDE0LjI2QzEwLjg0IDEzLjcyIDEwLjc0IDEzLjE0IDEwLjc0IDEyLjVDMTAuNzQgMTEuODYgMTAuODQgMTEuMjggMTEuMDMgMTAuNzRWOC42MUg4LjY2QzguMDA5IDkuOTIgNy42NjUgMTEuMTY1IDcuNjY1IDEyLjVDNy42NjUgMTMuODM1IDguMDA5IDE1LjA4IDguNjYgMTYuMzlMMTEuMDMgMTQuMjZaIiBmaWxsPSIjRkJCQzA0Ii8+CjxwYXRoIGQ9Ik0xNiA2LjA2QzE3LjczIDYuMDYgMTkuMjcgNi43IDIwLjQ1IDcuODhMMjIuMzUgNS45OEMyMC40NyA0LjI0IDE4LjQzIDMuNSAxNiAzLjVDMTIuNjIgMy41IDkuNjIgNy4yNCA4LjY2IDkuMDlMMTEuMDMgMTEuMjJDMTEuNzQgOS4xIDEzLjY3IDYuMDYgMTYgNi4wNloiIGZpbGw9IiNFQTQzMzUiLz4KPC9zdmc+Cg==') center/contain no-repeat;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 35px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(226, 232, 240, 0.8), transparent);
+    }
+
+    .divider span {
+      padding: 0 25px;
+      color: #718096;
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 25px;
+      padding: 10px 22px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 15px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid rgba(226, 232, 240, 0.8);
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #ff6b35;
+      box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.12);
+      transform: translateY(-1px);
+      background: white;
+    }
+
+    .form-input::placeholder {
+      color: #a0aec0;
+    }
+
+    .password-strength {
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .strength-bar {
+      height: 3px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      margin-bottom: 4px;
+      overflow: hidden;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #e53e3e, #dd6b20, #38a169);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.35);
+      margin-top: 15px;
+    }
+
+    .auth-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: left 0.6s;
+    }
+
+    .auth-btn:hover::before {
+      left: 100%;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(255, 107, 53, 0.45);
+    }
+
+    .auth-btn:active {
+      transform: translateY(-2px);
+    }
+
+    .auth-btn:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 16px;
+      color: #718096;
+    }
+
+    .auth-link a {
+      color: #ff6b35;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .auth-link a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 50%;
+      background: #ff6b35;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    .auth-link a:hover::after {
+      width: 100%;
+    }
+
+    .auth-link a:hover {
+      color: #f7931e;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+
+    .checkbox-wrapper {
+      position: relative;
+      min-width: 20px;
+    }
+
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      appearance: none;
+      position: relative;
+    }
+
+    .checkbox:checked {
+      background: #ff6b35;
+      border-color: #ff6b35;
+    }
+
+    .checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .checkbox-label {
+      font-size: 14px;
+      color: #4a5568;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .checkbox-label a {
+      color: #ff6b35;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .checkbox-label a:hover {
+      text-decoration: underline;
+    }
+
+    .floating-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .floating-shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      animation: floatUpDown 20s infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+      left: 15%;
+      width: 100px;
+      height: 100px;
+      animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+      left: 85%;
+      width: 30px;
+      height: 30px;
+      animation-delay: 3s;
+      animation-duration: 15s;
+    }
+
+    .floating-shape:nth-child(3) {
+      left: 65%;
+      width: 15px;
+      height: 15px;
+      animation-delay: 1s;
+      animation-duration: 12s;
+    }
+
+    .floating-shape:nth-child(4) {
+      left: 25%;
+      width: 70px;
+      height: 70px;
+      animation-delay: 5s;
+      animation-duration: 18s;
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      50% {
+        transform: translateY(-20vh) rotate(180deg);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 35px 25px;
+        margin: 10px;
+        border-radius: 24px;
+      }
+
+      .auth-title {
+        font-size: 32px;
+      }
+
+      .logo-text {
+        font-size: 30px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Enhanced entrance animation */
+    .auth-container {
+      animation: slideInScale 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+
+    @keyframes slideInScale {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    @media (max-width: 480px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="floating-elements">
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+  <div class="floating-shape"></div>
+</div>
+
+<div class="auth-container">
+  <div class="logo">
+    <div class="logo-icon"></div>
+    <div class="logo-text">Inn<span>Rise</span></div>
+  </div>
+
+  <div class="auth-header">
+    <h1 class="auth-title">Join InnRise</h1>
+    <p class="auth-subtitle">Start your extraordinary journey today</p>
+  </div>
+
+  <div id="google-btn" onclick="handleGoogleSignUp()">
+    <div class="google-icon"></div>
+    Continue with Google
+  </div>
+
+  <div class="divider"><span>or</span></div>
+
+  <!-- Added class="signup-form" so jQuery can bind -->
+  <form class="signup-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="firstName">First Name</label>
+        <input type="text" id="firstName" class="form-input" placeholder="First name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="lastName">Last Name</label>
+        <input type="text" id="lastName" class="form-input" placeholder="Last name" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="signupEmail">Email Address</label>
+      <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email address" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="signupPassword">Password</label>
+      <input type="password" id="signupPassword" class="form-input" placeholder="Create a strong password" required>
+      <div class="password-strength" id="passwordStrength" style="display: none;">
+        <div class="strength-bar">
+          <div class="strength-fill" id="strengthFill"></div>
+        </div>
+        <span id="strengthText">Password strength</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" required>
+    </div>
+
+    <div class="checkbox-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="terms" class="checkbox" required>
+      </div>
+      <label for="terms" class="checkbox-label">
+        I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a>
+      </label>
+    </div>
+
+    <div class="checkbox-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="newsletter" class="checkbox">
+      </div>
+      <label for="newsletter" class="checkbox-label">
+        Subscribe to our newsletter for exclusive deals and travel inspiration
+      </label>
+    </div>
+
+    <button type="submit" class="auth-btn" id="signupBtn">Create Account</button>
+  </form>
+
+  <div class="auth-link">
+    Already have an account? <a href="signin.html">Sign in here</a>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="../js/signup.js"></script>
+</body>
+
+</html>

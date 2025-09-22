@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnRise - Your Journey Starts Here</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-home me-2"></i>InnRise
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/hotel.html">Hotels</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/about.html">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/contact.html">Contact</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <button onclick="logout()" class="btn btn-outline-warning me-2 logout-btn">
+          <i class="fas fa-sign-out-alt me-1"></i>Logout
+        </button>
+        <a href="pages/hotel.html" class="btn btn-primary">Book Now</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section" id="home">
+  <!-- Background Image -->
+  <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+       alt="Luxury Hotel Background"
+       class="hero-background">
+
+  <div class="container">
+    <div class="hero-content">
+      <h1 class="hero-title">Your Journey</h1>
+      <h2 class="hero-subtitle">Starts Here</h2>
+      <p class="hero-description">
+        Discover extraordinary hotels that rise with you. Experience luxury, comfort, and fresh beginnings at every destination.
+      </p>
+
+      <!-- Search Form -->
+      <div class="search-form">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Destination">
+          </div>
+          <div class="col-md-3">
+            <input type="date" class="form-control" placeholder="Check-in">
+          </div>
+          <div class="col-md-3">
+            <input type="date" class="form-control" placeholder="Check-out">
+          </div>
+          <div class="col-md-3">
+            <select class="form-control">
+              <option>Guests</option>
+              <option>1 Guest</option>
+              <option>2 Guests</option>
+              <option>3 Guests</option>
+              <option>4+ Guests</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-search">Search Hotels</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="hero-actions">
+        <a href="#" class="btn btn-outline-light">Explore Destinations</a>
+        <a href="pages/hotel.html" class="btn btn-outline-light">Explore Hotels</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Section -->
+<section class="why-choose-section" id="about">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="section-title">Why Choose <span style="color: var(--primary-orange);">InnRise</span></h2>
+        <p class="section-subtitle">
+          Experience the perfect blend of luxury, comfort, and innovation that makes every stay memorable
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <h4 class="feature-title">Premium Selection</h4>
+            <p class="feature-description">
+              Handpicked luxury hotels and boutique properties that exceed expectations
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-map"></i>
+            </div>
+            <h4 class="feature-title">Global Destinations</h4>
+            <p class="feature-description">
+              Discover amazing places around the world with our extensive network
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h4 class="feature-title">Secure Booking</h4>
+            <p class="feature-description">
+              Safe and encrypted transactions with instant confirmation guarantee
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h4 class="feature-title">Personalized Service</h4>
+            <p class="feature-description">
+              Tailored recommendations based on your preferences and travel style
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-wifi"></i>
+            </div>
+            <h4 class="feature-title">Smart Amenities</h4>
+            <p class="feature-description">
+              Modern facilities and technology-enhanced comfort in every stay
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card feature-card">
+          <div class="card-body">
+            <div class="feature-icon">
+              <i class="fas fa-route"></i>
+            </div>
+            <h4 class="feature-title">Seamless Experience</h4>
+            <p class="feature-description">
+              From booking to checkout, enjoy a smooth and hassle-free journey
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="footer-section">
+          <h5><i class="fas fa-home me-2"></i>InnRise</h5>
+          <p style="color: #ccc; line-height: 1.6;">
+            Your journey starts here. Discover extraordinary hotels that rise with you and create unforgettable experiences.
+          </p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="footer-section">
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="pages/hotel.html">Find Hotels</a></li>
+            <li><a href="#">Destinations</a></li>
+            <li><a href="#">Special Offers</a></li>
+            <li><a href="#">Business Travel</a></li>
+            <li><a href="#">Gift Cards</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="footer-section">
+          <h5>Support</h5>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Booking Support</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="footer-section">
+          <h5>Stay Updated</h5>
+          <p style="color: #ccc;">Subscribe to our newsletter for exclusive deals and travel inspiration.</p>
+          <form class="newsletter-form">
+            <input type="email" class="form-control" placeholder="Your email address">
+            <button type="submit" class="btn btn-primary w-100">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p>&copy; 2024 InnRise. All rights reserved.</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="#" style="color: #ccc; text-decoration: none; margin-right: 20px;">Cookie Policy</a>
+          <a href="#" style="color: #ccc; text-decoration: none; margin-right: 20px;">Accessibility</a>
+          <a href="#" style="color: #ccc; text-decoration: none;">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Scroll to Top Button -->
+<div class="scroll-to-top" id="scrollToTop">
+  <i class="fas fa-arrow-up"></i>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="js/index.js"></script>

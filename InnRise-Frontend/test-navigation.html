@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Hotel Navigation - InnRise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        .test-hotel-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid #e9ecef;
+        }
+        .test-hotel-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15);
+            border-color: #f97316;
+        }
+        .test-hotel-card:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(249, 115, 22, 0.05);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .test-hotel-card::after {
+            content: 'Click to view details';
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            background: rgba(249, 115, 22, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+            pointer-events: none;
+        }
+        .test-hotel-card:hover::after {
+            opacity: 1;
+        }
+        .test-hotel-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+        }
+        .test-hotel-info {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+        .test-hotel-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .test-hotel-location {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .test-hotel-price {
+            color: #f97316;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .test-instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+        .test-instructions h3 {
+            margin-top: 0;
+            color: #1976d2;
+        }
+        .test-instructions ul {
+            margin-bottom: 0;
+        }
+        .test-instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🏨 Hotel Navigation Test</h1>
+        
+        <div class="test-instructions">
+            <h3>Test Instructions:</h3>
+            <ul>
+                <li><strong>Click anywhere on a hotel card</strong> to navigate to the hotel profile page</li>
+                <li>Notice the hover effects and "Click to view details" hint</li>
+                <li>The entire card should be clickable, not just the buttons</li>
+                <li>This demonstrates the new navigation functionality</li>
+            </ul>
+        </div>
+
+        <h2>Sample Hotel Cards</h2>
+        
+        <div class="test-hotel-card" onclick="navigateToHotelProfile(1)">
+            <div class="test-hotel-image">
+                🏨 Hotel Image
+            </div>
+            <div class="test-hotel-info">
+                <h3 class="test-hotel-title">Sunset Paradise Hotel</h3>
+                <div class="test-hotel-location">📍 Colombo, Sri Lanka</div>
+                <div class="test-hotel-price">LKR 75,000/night</div>
+            </div>
+        </div>
+
+        <div class="test-hotel-card" onclick="navigateToHotelProfile(2)">
+            <div class="test-hotel-image">
+                🏨 Hotel Image
+            </div>
+            <div class="test-hotel-info">
+                <h3 class="test-hotel-title">Mountain View Resort</h3>
+                <div class="test-hotel-location">📍 Kandy, Sri Lanka</div>
+                <div class="test-hotel-price">LKR 54,000/night</div>
+            </div>
+        </div>
+
+        <div class="test-hotel-card" onclick="navigateToHotelProfile(3)">
+            <div class="test-hotel-image">
+                🏨 Hotel Image
+            </div>
+            <div class="test-hotel-info">
+                <h3 class="test-hotel-title">Beachfront Villa</h3>
+                <div class="test-hotel-location">📍 Galle, Sri Lanka</div>
+                <div class="test-hotel-price">LKR 105,000/night</div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>✅ Navigation Function</h3>
+            <p>When you click on any hotel card above, it will call:</p>
+            <code>navigateToHotelProfile(hotelId)</code>
+            <p>This function redirects to: <code>hotel-profile.html?id={hotelId}</code></p>
+        </div>
+    </div>
+
+    <script>
+        function navigateToHotelProfile(hotelId) {
+            // This is the same function used in the actual hotel.js
+            alert(`Navigating to hotel profile for Hotel ID: ${hotelId}\n\nIn the actual application, this would redirect to:\nhotel-profile.html?id=${hotelId}`);
+            
+            // Uncomment the line below to actually navigate (for testing)
+            // window.location.href = `hotel-profile.html?id=${hotelId}`;
+        }
+    </script>
+</body>
+</html>

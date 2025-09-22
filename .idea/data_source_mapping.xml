@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/InnRise-Backend/quick_setup.sql" value="c248b935-b995-43ab-88a1-27ff6c50e86b" />
+    <file url="file://$PROJECT_DIR$/InnRise-Backend/sample_data.sql" value="c248b935-b995-43ab-88a1-27ff6c50e86b" />
+  </component>
+</project>
