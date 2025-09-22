@@ -197,32 +197,24 @@ function handleSignIn(event) {
 
 // ===================== FORGOT PASSWORD =====================
 function handleForgotPassword() {
-  Swal.fire({
-    title: 'Password Reset',
-    input: 'email',
-    inputLabel: 'Enter your email address',
-    inputPlaceholder: 'your@email.com',
-    showCancelButton: true,
-    confirmButtonText: 'Send Reset Link',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: '#f97316',
-    cancelButtonColor: '#6c757d',
-    inputValidator: (value) => {
-      if (!value) {
-        return 'You need to enter an email address!';
-      }
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Reset Link Sent',
-        text: `Password reset link sent to ${result.value}`,
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#f97316'
-      });
-    }
-  });
+  // Directly redirect to OTP-based reset page
+  window.location.href = 'reset-password-otp.html';
+}
+
+// ===================== PASSWORD TOGGLE FUNCTION =====================
+function togglePassword(inputId) {
+  const passwordInput = document.getElementById(inputId);
+  const passwordIcon = document.getElementById(inputId + '-icon');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    passwordIcon.classList.remove('fa-eye');
+    passwordIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    passwordIcon.classList.remove('fa-eye-slash');
+    passwordIcon.classList.add('fa-eye');
+  }
 }
 
 // ===================== NAV TO SIGNUP =====================

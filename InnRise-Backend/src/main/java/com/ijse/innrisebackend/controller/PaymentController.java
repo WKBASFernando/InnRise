@@ -4,8 +4,6 @@ import com.ijse.innrisebackend.dto.ApiResponse;
 import com.ijse.innrisebackend.dto.PaymentRequest;
 import com.ijse.innrisebackend.dto.PaymentResponse;
 import com.ijse.innrisebackend.entity.Booking;
-import com.ijse.innrisebackend.entity.Payment;
-import com.ijse.innrisebackend.enums.PaymentMethod;
 import com.ijse.innrisebackend.repository.BookingRepository;
 import com.ijse.innrisebackend.repository.PaymentRepository;
 import com.ijse.innrisebackend.service.PaymentService;
