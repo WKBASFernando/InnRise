@@ -40,55 +40,55 @@ This system is designed to cater to the unique requirements of the Sri Lankan ho
 Below are some screenshots of the InnRise web application:
 
 ### 1. Landing Page
-![Landing Page](images/1.png)
+![Landing Page](InnRise-Frontend/img/Screenshot%20(48).png)
 *Your Journey Starts Here* — Discover extraordinary hotels that rise with you. Experience luxury, comfort, and fresh beginnings at every destination.
 
 ### 2. Hotel Search
-![Hotel Search](images/2.png)
+![Hotel Search](InnRise-Frontend/img/Screenshot%20(49).png)
 *Discover Amazing Hotels* — Search and filter hotels by location, date, guests, and price range.
 
 ### 3. Hotel Profile & Gallery
-![Hotel Profile & Gallery](images/3.png)
+![Hotel Profile & Gallery](InnRise-Frontend/img/Screenshot%20(50).png)
 *Hotel Gallery* — View detailed information and images for each hotel.
 
 ### 4. Hotel Details & Booking Panel
-![Hotel Details & Booking Panel](images/4.png)
+![Hotel Details & Booking Panel](InnRise-Frontend/img/Screenshot%20(51).png)
 *About This Hotel* — Get hotel details, contact info, and booking options.
 
 ### 5. Available Rooms
-![Available Rooms](images/5.png)
+![Available Rooms](InnRise-Frontend/img/Screenshot%20(52).png)
 *Different room types and pricing are showcased for easy selection.*
 
 ### 6. Special Packages
-![Special Packages](images/6.png)
+![Special Packages](InnRise-Frontend/img/Screenshot%20(53).png)
 *Select from exclusive hotel packages such as Romantic Getaway, Family Package, and Business Package.*
 
 ### 7. About InnRise
-![About InnRise](images/7.png)
+![About InnRise](InnRise-Frontend/img/Screenshot%20(54).png)
 *Learn about InnRise's mission to connect travelers with exceptional hospitality across Sri Lanka.*
 
 ### 8. Feature Highlights
-![Feature Highlights](images/8.png)
+![Feature Highlights](InnRise-Frontend/img/Screenshot%20(55).png)
 *Smart search, secure booking, 24/7 support, verified reviews, mobile friendly, and best prices.*
 
 ### 9. Footer & Quick Links
-![Footer & Quick Links](images/9.png)
+![Footer & Quick Links](InnRise-Frontend/img/Screenshot%20(56).png)
 *Quick access to hotel finding, support, newsletter, and social media.*
 
 ### 10. Booking Dialog
-![Booking Dialog](images/10.png)
+![Booking Dialog](InnRise-Frontend/img/Screenshot%20(57).png)
 *Book your room by selecting dates, number of guests, and room type.*
 
 ### 11. Booking Summary
-![Booking Summary](images/11.png)
+![Booking Summary](InnRise-Frontend/img/Screenshot%20(58).png)
 *Summary of your booking including selected room, nights, and total price.*
 
 ### 12. Payment Confirmation
-![Payment Confirmation](images/12.png)
+![Payment Confirmation](InnRise-Frontend/img/Screenshot%20(59).png)
 *Complete payment to confirm your hotel reservation.*
 
 ### 13. Payment Method
-![Payment Method](images/13.png)
+![Payment Method](InnRise-Frontend/img/Screenshot%20(60).png)
 *Securely enter your payment details to process your booking.*
 
 ---
