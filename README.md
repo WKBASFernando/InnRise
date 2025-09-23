@@ -35,6 +35,13 @@ This system is designed to cater to the unique requirements of the Sri Lankan ho
 
 ---
 
+## Demo Video
+
+Watch a walkthrough of the system here:  
+[![InnRise Demo](https://img.youtube.com/vi/FNKc6ljMh4M/0.jpg)](https://youtu.be/FNKc6ljMh4M)
+
+---
+
 ## Screenshots
 
 Below are some screenshots of the InnRise web application:
@@ -150,5 +157,3 @@ This project does not specify a license yet. Please contact the repository owner
 For support or inquiries, open an issue in the repository.
 
 ---
-
-*This README provides an overview and quick start instructions. Please update with more details as the project evolves.*
