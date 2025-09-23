@@ -440,10 +440,10 @@ function filterHotels() {
     // Price filter
     if (priceRange) {
       switch(priceRange) {
-        case '0-100': match = match && hotelPrice <= 100; break;
-        case '100-200': match = match && hotelPrice > 100 && hotelPrice <= 200; break;
-        case '200-300': match = match && hotelPrice > 200 && hotelPrice <= 300; break;
-        case '300+': match = match && hotelPrice > 300; break;
+        case '0-5000': match = match && hotelPrice <= 5000; break;
+        case '5000-10000': match = match && hotelPrice > 5000 && hotelPrice <= 10000; break;
+        case '10000-20000': match = match && hotelPrice > 10000 && hotelPrice <= 20000; break;
+        case '20000+': match = match && hotelPrice > 20000; break;
       }
     }
 

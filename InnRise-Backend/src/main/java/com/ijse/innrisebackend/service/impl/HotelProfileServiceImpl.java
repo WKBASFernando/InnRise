@@ -68,7 +68,7 @@ public class HotelProfileServiceImpl implements HotelProfileService {
                 roomDTO.setRoomId(room.getRoomId());
                 roomDTO.setType(room.getType());
                 roomDTO.setPrice(room.getPrice());
-                roomDTO.setImageUrl(getRoomImageUrl(room.getRoomId())); // Backend generates image URL
+                roomDTO.setImageUrl(getRoomImageUrl(room)); // Backend generates image URL
                 roomDTOs.add(roomDTO);
             }
             profileDTO.setRooms(roomDTOs);
@@ -82,7 +82,7 @@ public class HotelProfileServiceImpl implements HotelProfileService {
                 packageDTO.setPackageName(pkg.getPackageName());
                 packageDTO.setDescription(pkg.getDescription());
                 packageDTO.setPrice(pkg.getPrice());
-                packageDTO.setImageUrl(getPackageImageUrl(pkg.getPackageId())); // Backend generates image URL
+                packageDTO.setImageUrl(getPackageImageUrl(pkg)); // Backend generates image URL
                 packageDTOs.add(packageDTO);
             }
             profileDTO.setPackages(packageDTOs);
@@ -114,17 +114,75 @@ public class HotelProfileServiceImpl implements HotelProfileService {
     }
 
     // Backend business logic: Generate room image URLs
-    private String getRoomImageUrl(Long roomId) {
-        // Backend logic to determine room image
-        // For now, return a default room image
-        return "http://localhost:8080/images/room_" + roomId + ".jpg";
+    private String getRoomImageUrl(Room room) {
+        if (room.getImageUrl() != null && !room.getImageUrl().isEmpty()) {
+            return getFullImageUrl(room.getImageUrl());
+        }
+        // Fallback to default room image based on room type
+        return getDefaultRoomImageUrl(room.getType());
+    }
+    
+    // Backend business logic: Get default room image based on room type
+    private String getDefaultRoomImageUrl(String roomType) {
+        if (roomType == null) {
+            return "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop";
+        }
+        
+        String lowerType = roomType.toLowerCase();
+        if (lowerType.contains("suite") || lowerType.contains("presidential")) {
+            return "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("deluxe") || lowerType.contains("ocean")) {
+            return "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("family")) {
+            return "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("business") || lowerType.contains("executive")) {
+            return "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("garden") || lowerType.contains("mountain")) {
+            return "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("beach") || lowerType.contains("villa")) {
+            return "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop";
+        } else if (lowerType.contains("heritage")) {
+            return "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop";
+        } else {
+            return "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&h=600&fit=crop";
+        }
     }
 
     // Backend business logic: Generate package image URLs
-    private String getPackageImageUrl(Long packageId) {
-        // Backend logic to determine package image
-        // For now, return a default package image
-        return "http://localhost:8080/images/package_" + packageId + ".jpg";
+    private String getPackageImageUrl(HotelPackage pkg) {
+        if (pkg.getImageUrl() != null && !pkg.getImageUrl().isEmpty()) {
+            return getFullImageUrl(pkg.getImageUrl());
+        }
+        // Fallback to default package image based on package name
+        return getDefaultPackageImageUrl(pkg.getPackageName());
+    }
+    
+    // Backend business logic: Get default package image based on package name
+    private String getDefaultPackageImageUrl(String packageName) {
+        if (packageName == null) {
+            return "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop";
+        }
+        
+        String lowerName = packageName.toLowerCase();
+        if (lowerName.contains("romantic") || lowerName.contains("honeymoon")) {
+            return "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("family")) {
+            return "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("business")) {
+            return "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("adventure") || lowerName.contains("hiking")) {
+            return "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("cultural") || lowerName.contains("heritage")) {
+            return "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("beach") || lowerName.contains("luxury")) {
+            return "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("water") || lowerName.contains("sports")) {
+            return "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop";
+        } else if (lowerName.contains("tea") || lowerName.contains("country")) {
+            return "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop";
+        } else {
+            return "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop";
+        }
     }
 
     // Backend business logic: Get default image URL
